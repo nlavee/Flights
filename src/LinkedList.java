@@ -234,7 +234,7 @@ public class LinkedList<T> {
 	 */
 	private class LLIterator implements Iterator<T> {
 
-		ListNode<T> curr;
+		private ListNode<T> curr;
 
 		private LLIterator() {
 			curr = (ListNode<T>) head;
@@ -242,16 +242,14 @@ public class LinkedList<T> {
 
 		@Override
 		public boolean hasNext() {
-			boolean res = false;
-			if (curr != null) {
-				res = true;
-			}
-			return res;
+			return curr != null;
 		}
 
 		@Override
 		public T next() {
-			return curr.getData();
+			T res = curr.getData();
+			curr = curr.getNext();
+			return res;
 		} 
 
 		public ListNode<T> nextNode() {
@@ -260,8 +258,7 @@ public class LinkedList<T> {
 
 		@Override
 		public void remove() {
-			//curr = this.next();
-			//???
+			//
 		}		
 	}
 

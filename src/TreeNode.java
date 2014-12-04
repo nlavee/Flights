@@ -1,17 +1,28 @@
 
 
+
 public class TreeNode<T>{
 
 	T data;
 	TreeNode<T> left;
 	TreeNode<T> right;
 	TreeNode<T> parent;
+	boolean red;
 	
 	public TreeNode(T data, TreeNode<T> left, TreeNode<T> right, TreeNode<T> parent) {
 		this.data = data;
 		this.left = left;
 		this.right = right;
 		this.parent = parent;
+	}
+
+	public TreeNode(T data, TreeNode<T> left, TreeNode<T> right,
+			TreeNode<T> parent, boolean red) {
+		this.data = data;
+		this.left = left;
+		this.right = right;
+		this.parent = parent;
+		this.red = red;
 	}
 
 	public void setData(T data) {
@@ -51,7 +62,12 @@ public class TreeNode<T>{
 		return data.toString();
 	}
 
+	boolean isRed() {
+		return red;
+	}
 
-	
+	void setRed(boolean red) {
+		this.red = red;
+	}	
 	
 } //end class TreeNode

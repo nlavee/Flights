@@ -17,6 +17,11 @@ public class Vertex<T>{
 	}
 
 	
+	LinkedList<Edge<T>> getAdjacencyList() {
+		return adjacencyList;
+	}
+
+
 	/**
 	 * method to add Edges into a Vertex
 	 * @param theEdge
@@ -26,11 +31,6 @@ public class Vertex<T>{
 		adjacencyList.addToFront(theEdge);
 	}
 	
-	public void setAdjacencyList(LinkedList<Edge<T>> adjacencyList) {
-		this.adjacencyList = adjacencyList;
-	}
-
-
 	/**
 	 * method to remove an Edge from a Vertex
 	 * @param theEdge
@@ -53,5 +53,7 @@ public class Vertex<T>{
 	public T getCityInQuestion() {
 		return cityInQuestion;
 	}
+	
+	
 
 }

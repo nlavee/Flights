@@ -1,5 +1,6 @@
 
 
+
 import java.util.Comparator;
 import java.util.Iterator;
 
@@ -13,33 +14,45 @@ public class BinarySearchTree<T>{
 	TreeNode<T> root = null;
 
 	Comparator<T> comp; 
-	
+
 	public BinarySearchTree(Comparator<T> comp2) {
 		this.comp = comp2;
 		root = null;
 	} // end constructor 
+
 	
+	
+	void setRoot(TreeNode<T> root) {
+		this.root = root;
+	}
+
+
+
 	/**
 	 * Method to insert a data as the root of the Binary Search Tree
 	 * @param data
 	 */
-	public void insert(T data) {
+	public TreeNode<T> insert(T data) {
 		TreeNode<T> node = new TreeNode<T>(data, null, null,null);
 		if (root == null) {
 			root = node;
+			TreeNode<T> sentinel = new TreeNode<T>(null,null, null, null);
+			root.setParent(sentinel);
 		} else {
 			insertNode(node, root);
 		} // end if 
+		return node;
 	} // end insert()
-	
+
 	/**
 	 * Method to add node into a binary search tree
 	 * @param node
 	 * @param subTree
 	 */
 	private void insertNode(TreeNode<T> node, TreeNode<T> subTree) {
+		node.setRed(true);
 		if (comp.compare(node.getData(), subTree.getData()) > 0) {
-		//if ((node.compareTo(subTree)  > 0)) {
+			//if ((node.compareTo(subTree)  > 0)) {
 			if (subTree.getRight() == null) {
 				subTree.setRight(node);
 				node.setParent(subTree);
@@ -77,7 +90,7 @@ public class BinarySearchTree<T>{
 		result = inOrderWalk(root);
 		return result;
 	} // end toString() 
-	
+
 	/**
 	 * Search with recursion method
 	 * @param data
@@ -120,14 +133,14 @@ public class BinarySearchTree<T>{
 
 		//if larger
 		if (comp.compare(node.getData(), subTree.getData()) > 0) {
-		//if ((node.compareTo(subTree)  > 0)) {
+			//if ((node.compareTo(subTree)  > 0)) {
 			if (subTree.getRight() == null); //we cannot find the data, res = null
 			else {
 				res = recursiveSearch(node,subTree.getRight()); //continue searching for larger
 			} // end if
 			//if smaller
 		} else if (comp.compare(node.getData(), subTree.getData()) < 0){
-		//} else if ((node.compareTo(subTree)  < 0)) {
+			//} else if ((node.compareTo(subTree)  < 0)) {
 			if (subTree.getLeft() == null); //we cannot find the data, res = null
 			else {
 				res = recursiveSearch(node,subTree.getLeft()); //continue searching for smaller
@@ -151,7 +164,7 @@ public class BinarySearchTree<T>{
 			result = nodeFound.getData();
 		}
 		else {
-			System.out.println("Cannot find the following data from search TreeGiven: " + data + ". Set search result to the data.");
+			//System.out.println("Cannot find the following data from search TreeGiven: " + data + ". Set search result to the data.");
 			result =  data;
 		}
 		return result;
@@ -162,15 +175,15 @@ public class BinarySearchTree<T>{
 	 * @param data
 	 * @return
 	 */
-	private TreeNode<T> searchforNode(T data) {
+	public TreeNode<T> searchforNode(T data) {
 		//TreeNode<T> result;
 		TreeNode<T> curr = root;
 		TreeNode<T> prob = new TreeNode<T>(data,null,null, null);
 
 		while(curr != null && this.comp.compare(curr.getData(), data) != 0) {
-		//while(curr != null && (curr.compareTo(prob)  != 0)) {
+			//while(curr != null && (curr.compareTo(prob)  != 0)) {
 			if(this.comp.compare(data, curr.getData()) < 0) {
-			//if ((prob.compareTo(curr)  < 0)) {
+				//if ((prob.compareTo(curr)  < 0)) {
 				curr = curr.getLeft();
 			} else {
 				curr = curr.getRight();
@@ -187,9 +200,9 @@ public class BinarySearchTree<T>{
 	private String printPreorder(TreeNode<T> initRoot) {
 		String res = "";
 		if(root!= null) {
-			res += root.data;
-			res += printPreorder(root.left);
-			res +=printPreorder(root.right);
+			res += root.getData();
+			res += printPreorder(root.getLeft());
+			res +=printPreorder(root.getRight());
 		}
 		return res;
 	}
@@ -231,7 +244,7 @@ public class BinarySearchTree<T>{
 		curr = key;
 
 		while(curr.getLeft() != null && this.comp.compare(key.getData(),curr.getLeft().getData()) != 0) {
-		//while(curr.getLeft() != null && key.compareTo(curr.getLeft()) != 0) {
+			//while(curr.getLeft() != null && key.compareTo(curr.getLeft()) != 0) {
 			curr = curr.getLeft();
 		}
 		return curr;
@@ -242,7 +255,7 @@ public class BinarySearchTree<T>{
 	 * @param data
 	 * @return
 	 */
-	public TreeNode<T> sucessor(T data) {
+	private TreeNode<T> sucessor(T data) {
 		TreeNode<T> curr;
 		TreeNode<T> res = new TreeNode<T> (null,null,null,null);
 
@@ -266,11 +279,11 @@ public class BinarySearchTree<T>{
 		TreeNode<T> res = null;
 
 		//check if curr is null first
-		if(curr != null) {
+		if(curr != null && curr.getParent().getData() != null) {
 			res = curr.getParent();
 
 			//if that node has smaller value, keep going up to parent
-			if(comp.compare(res.data, curr.data) < 0) {
+			if(comp.compare(res.getData(), curr.getData()) < 0) {
 				res = getLeftParent(res);
 			}
 		}
@@ -292,7 +305,7 @@ public class BinarySearchTree<T>{
 			else {
 				if(keyNode.getLeft() == null & keyNode.getRight() == null) {
 					if(comp.compare(key, keyNode.getParent().data) <0) {
-					//if ((prob.compareTo(keyNode.getParent())  > 0)) {
+						//if ((prob.compareTo(keyNode.getParent())  > 0)) {
 						keyNode.getParent().setLeft(null);
 					} else {
 						keyNode.getParent().setRight(null);
@@ -314,7 +327,10 @@ public class BinarySearchTree<T>{
 		}
 	}
 
-
+	Iterator<T> iterator() {
+		return new BSTIterator();
+	}
+	
 	//Iterator//
 	public class BSTIterator implements Iterator<T> {
 
@@ -344,8 +360,8 @@ public class BinarySearchTree<T>{
 
 	}
 
-	public String getRoot() {
-		return root.toString();
+	public TreeNode<T> getRoot() {
+		return root;
 	}
 
 } // end class BinarySearchTree

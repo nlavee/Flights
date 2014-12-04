@@ -12,7 +12,7 @@ public class City{
 	String name;
 	double latitude;
 	double longitude;
-	PApplet parent;
+	//PApplet parent;
 	
 	public City(String name, Double latitude, Double longitude) {
 		this.name = name;
@@ -21,12 +21,13 @@ public class City{
 	}
 
 	//this constructor is for Processing use
-	public City(String name, Double latitude, Double longitude, PApplet p) {
+	/*public City(String name, Double latitude, Double longitude, PApplet p) {
 		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		parent = p;
 	}
+	*/
 	
 	public String getName() {
 		return name;
@@ -74,9 +75,25 @@ public class City{
 	 * Method to draw in Processing. In order to use this, the City has be constructed with this as a paramter
 	 * A city will be drawn as a red point
 	 */
-	void display() {
+	void display(PApplet parent) {
 		parent.fill(255,0,0);
 		//parent.ellipse((float) (latitude*4.7*3), (float) (longitude*1.8*1.5), 3,3);
 		parent.ellipse((float) (latitude*latitude*latitude/100), (float) (longitude*longitude*longitude/2900), 5,5);
+	}
+	
+	boolean checkCity(float x, float y) {
+		boolean city = false;
+		if(distance(x, y, 
+				(float) (latitude*latitude*latitude/100), (float) (longitude*longitude*longitude/2900)) < 5.0) {
+			city = true;
+		}
+		return city;
+	}
+	
+	private float distance(float x1, float y1, float x2, float y2) {
+		float diffX = x1 - x2;
+		float diffY = y1 - y2;
+		float result = (float) Math.sqrt(diffX * diffX + diffY * diffY) ;
+		return result;
 	}
 }

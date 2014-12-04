@@ -41,7 +41,7 @@ public class Main{
 		//test.setup();
 		//test.draw();
 		String name = justCities.toString();
-		System.out.println(name);
+		//System.out.println(name);
 		
 		//THE PROGRAM WILL NOT WORK IF THE ORIGIN IS NOT FOUND IN THE FLIGHT GRAPH
 		//NEED TO EITHER MAKE IT HACKPROOF OR MAKE IT ABLE TO CREATE NEW VERTEX
@@ -71,9 +71,9 @@ public class Main{
 				Vertex<City> destRes = (Vertex<City>) fG.verticesList.searchLoop(dest);
 				City ques = new City(destRes.cityInQuestion.name,destRes.cityInQuestion.latitude,destRes.cityInQuestion.longitude);
 				//Vertex<City> destRes = new Vertex(fG.verticesList.searchLoop(dest));
-				System.out.println(ques.latitude);
+				//System.out.println(ques.latitude);
 				destRes = new Vertex(ques);
-				System.out.println("destRes is: " + destRes);
+				//System.out.println("destRes is: " + destRes);
 				
 				//seems to work well even if destRes doesn't return an actual Vertex in the flight graph
 				
@@ -87,7 +87,7 @@ public class Main{
 			}
 			//System.out.println(ori);
 		}
-		System.out.println(fG);
+		//System.out.println(fG);
 		//Vertex<City> searchRes = (Vertex<City>) fG.verticesList.searchLoop(new City("SFO",0.0,0.0));
 		//System.out.println(searchRes);
 	}

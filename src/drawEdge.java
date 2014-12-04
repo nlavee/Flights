@@ -43,7 +43,7 @@ public class drawEdge {
 		float destLong = second.getLongitude().floatValue();
 
 		parent.stroke(0, 0, 0);
-		parent.strokeWeight(4);
+		parent.strokeWeight(2);
 		parent.line( (float)(oriLat*oriLat*oriLat/100),(float) (oriLong*oriLong*oriLong/2900),(float)(destLat*destLat*destLat/100),(float)(destLong*destLong*destLong/2900));
 		parent.pushMatrix();
 		  parent.translate((float)(destLat*destLat*destLat/100), (float)(destLong*destLong*destLong/2900));
@@ -53,6 +53,6 @@ public class drawEdge {
 		  parent.line(0, 0, 4, -4);
 		parent.popMatrix();
 		//easier to see the city in different part of the picture
-		parent.stroke(parent.random(255),parent.random(255),parent.random(255));
+		//parent.stroke(parent.random(255),parent.random(255),parent.random(255));
 	}
 }

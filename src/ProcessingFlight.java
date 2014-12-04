@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import processing.core.PApplet;
 import processing.core.PImage;
+import stack.Stack;
 
 public class ProcessingFlight extends PApplet{
 
@@ -16,6 +17,8 @@ public class ProcessingFlight extends PApplet{
 	drawName test = new drawName(this);
 	FileIO hw2;
 	ArrayList<Button> buttonList = new ArrayList<Button>();
+	ArrayList<Vertex<City>> list = new ArrayList<Vertex<City>>();
+
 	boolean buttonClicked = false;
 	flightGraph p ;
 	Button Price = new Button(0,645,500,50);
@@ -24,6 +27,9 @@ public class ProcessingFlight extends PApplet{
 	boolean originForPath = false;
 	boolean destinationForPath = false;
 	boolean chosenCity = false;
+	boolean newFunction = false;
+	boolean firstTime = true;
+	Stack<Vertex<City>> ans = new Stack<Vertex<City>>();
 
 	Vertex<City> origin;
 	Vertex<City> destination;
@@ -100,9 +106,40 @@ public class ProcessingFlight extends PApplet{
 			}
 			Price.display(this);
 			exit.display(this);
-			
+
 			fill(255);
 			this.text("anguyen1@skidmore.edu", 1070, 7);
+
+			if(!ans.isEmpty()) {;
+			while(!ans.isEmpty()) {
+				list.add(ans.Pop());
+			}
+			}
+
+			if(!newFunction) {
+				for(int i = 0 ; i < list.size()-1; i++) {
+					trial.displayFlight(list.get(i).getCityInQuestion(), list.get(i+1).getCityInQuestion());
+				}
+			} else {
+				list = new ArrayList<Vertex<City>>();
+			}
+			
+			//instruction for users
+			if(firstTime) {
+				fill(255);
+				rect(150,170,900,200);
+				fill(0);
+				text("Welcome to Flight Program by NLAVu. Here's how the program runs:\n\nYou can click "
+						+ "any two cities and the dialog at bottom left will show the first one as origin and the second one as "
+						+ "the destination.\n"
+						+ "You then can click on any button on top to find different routes between the points. \nYou can try those steps"
+						+ " even when this message is popping up. \nOnce you are"
+						+ " done with the application, you can simply click the Quit button on top left corner and you "
+						+ "will exit the program. You can press any key to exit this message and start your"
+						+ " experience! Thank you!\n\nanguyen1@skidmore.edu", 200,200, 700,400);
+				
+				if(keyPressed) firstTime = false;
+			}
 		}
 		else 
 		{
@@ -115,7 +152,7 @@ public class ProcessingFlight extends PApplet{
 		if(exit.checkCoordinate(mouseX, mouseY)) {
 			this.exit();
 		}
-		
+
 		else if(!chosenCity) {
 			Iterator<Vertex<City>> iterator = p.verticesList.iterator();
 			while(iterator.hasNext()) {
@@ -125,6 +162,7 @@ public class ProcessingFlight extends PApplet{
 						origin = question;
 						Price.setFunction("Original City: " + origin.getCityInQuestion().toString());
 						originForPath = true;
+						newFunction = true;
 					} else if(!destinationForPath) {
 						destination = question;
 						Price.setFunction("Destination: " + destination.getCityInQuestion().toString());
@@ -141,40 +179,49 @@ public class ProcessingFlight extends PApplet{
 					String toDo = theButton.runFunction();
 					if(toDo=="DFS") {	
 						String text = "";
-						text += p.SearchRoute(origin, destination, toDo) + "";
+						ans = p.SearchRoute(origin, destination, toDo);
+						if(ans.isEmpty()) text = "Cannot get route between these two cities";
 						Price.setFunction(text);
 						origin = null;
 						destination = null;
 						originForPath = false;
 						destinationForPath = false;
 						chosenCity = false;
+						newFunction = false;
 					} else if (toDo =="BFS") {
 						String text = "";
-						text += p.SearchRoute(origin, destination, toDo) + "";
+						ans = p.SearchRoute(origin, destination, toDo);
+						if(ans.isEmpty()) text = "Cannot get route between these two cities";
 						Price.setFunction(text);
 						origin = null;
 						destination = null;
 						originForPath = false;
 						destinationForPath = false;
 						chosenCity = false;
+						newFunction = false;
 					} else if (toDo =="Dijkstra") {
 						String text = "";
-						text += p.SearchRoute(origin, destination, toDo) + "";
-						Price.setFunction(text);
+						Price price = new Price(0.0);
+						ans = p.Dijkstra(origin, destination, price);
+						if(price.getPrice() != Double.MAX_VALUE)	Price.setFunction("Price for cheapest route: " + price.getPrice());
+						else Price.setFunction("Cannot get route between these two cities");
 						origin = null;
 						destination = null;
 						originForPath = false;
 						destinationForPath = false;
 						chosenCity = false;
+						newFunction = false;
 					} else if (toDo =="short flight") {
 						String text = "";
 						text += p.directConnect(origin, destination) +"";
+						if(text.equals("0.0")) text = "Cannot find direct flight between the cities";
 						Price.setFunction(text);
 						origin = null;
 						destination = null;
 						originForPath = false;
 						destinationForPath = false;
 						chosenCity = false;
+						newFunction = false;
 					} else if (toDo =="transit flight") {
 						String text = "";
 						text += p.shortFlight(origin, destination) +"";
@@ -184,6 +231,7 @@ public class ProcessingFlight extends PApplet{
 						originForPath = false;
 						destinationForPath = false;
 						chosenCity = false;
+						newFunction = false;
 					}
 				}
 			}

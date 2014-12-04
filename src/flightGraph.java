@@ -133,40 +133,15 @@ public class flightGraph<T>{
 	 * @param String the type of search to do, can be "DFS", "BFS" or "Dijkstra"
 	 * @return String result route
 	 */
-	public String SearchRoute(Vertex<T> from, Vertex<T> to, String c) {
-		String res ="";
+	public Stack<Vertex<T>> SearchRoute(Vertex<T> from, Vertex<T> to, String c) {
+		Stack<Vertex<T>> ans = new Stack<Vertex<T>>();
 
 		if(c == "DFS") {
-			Stack<Vertex<T>> ans = DFSAct(from,to);
-			while(!ans.isEmpty()) {
-				String city = ans.Pop().getCityInQuestion().toString();
-				if(!city.equals(to.getCityInQuestion().toString())) res += city + " ==> ";
-				else res += city;
-			}
-			if(res.equals("")) res += "Cannot find a route between these destinations.";
+			ans = DFSAct(from,to);
 		} else if(c=="BFS") {
-			Stack<Vertex<T>> ans = BFSAct(from,to);
-			while(!ans.isEmpty()) {
-				String city = ans.Pop().getCityInQuestion().toString();
-				if(!city.equals(to.getCityInQuestion().toString())) res += city + " ==> ";
-				else res += city;
-			}
-			if(res.equals("")) res += "Cannot find a route between these destinations.";
-		} else if(c == "Dijkstra") {
-			Price price = new Price(0.0);
-			Stack<Vertex<T>> ans = Dijkstra(from,to, price);
-			int i = 0;
-			while(!ans.isEmpty()) {
-				i++;
-				Vertex<T> route = ans.Pop();
-				String city = route.getCityInQuestion().toString();
-				if(!city.equals(to.getCityInQuestion().toString())) res += city + " ==> ";
-				else res += city;
-			}
-			res += ". \nPrice = " + price;
-			if(i==1) res = "Cannot find a route between these destinations.";
-		} else res = "Wrong parameter. Please input only 'DFS', 'BFS', 'Dijkstra' for the last parameter.";
-		return res;
+			ans = BFSAct(from,to);
+		} else ans = null;
+		return ans;
 	}
 
 	/**
@@ -275,7 +250,7 @@ public class flightGraph<T>{
 	 * @param Vertex end
 	 * @return stack of route
 	 */
-	private Stack<Vertex<T>> Dijkstra(Vertex<T> a, Vertex<T> b, Price c) {
+	Stack<Vertex<T>> Dijkstra(Vertex<T> a, Vertex<T> b, Price c) {
 		boolean find = false;
 		Heap<Vertex<T>> PQ = new Heap<Vertex<T>>();
 		HashMap<Vertex<T>, Vertex<T>> route = new HashMap<Vertex<T>, Vertex<T>>();
@@ -286,7 +261,7 @@ public class flightGraph<T>{
 		Iterator<Vertex<T>> iteratorTree = verticesList.iterator();
 		while(iteratorTree.hasNext()) {
 			Vertex<T> ele = iteratorTree.next();
-			if(!ele.equals(a)) PQ.insert(ele, Integer.MAX_VALUE);
+			if(!ele.equals(a)) PQ.insert(ele, Double.MAX_VALUE);
 		}
 		Trace.println(PQ);
 
@@ -295,21 +270,21 @@ public class flightGraph<T>{
 		while(!PQ.isEmpty() && find == false) {
 			HeapData<Vertex<T>> out = PQ.Min();
 			Trace.println(out);
-			
+
 			//get the price
 			if(out.getData().equals(b))	c.setPrice(out.getKey());
-			
+
 			Vertex<T> u = out.getData();
 
 			Trace.println(u);
-			
+
 
 			if(u.equals(b)) {
 				find = true;
 			} else {
 				LinkedList<Edge<T>> temp = u.getAdjacencyList();
 				Trace.println(temp);
-				
+
 				if(temp!= null) {
 					Iterator<Edge<T>> iterator = temp.iterator();
 					while(iterator.hasNext()) {
@@ -318,7 +293,7 @@ public class flightGraph<T>{
 						if(weight + PQ.getKey(u) < PQ.getKey(verticesList.searchLoop(ele.getDestination()))) {
 							PQ.decreaseKey(verticesList.searchLoop(ele.getDestination()), weight + PQ.getKey(u));
 							Trace.println(PQ.getKey(verticesList.searchLoop(ele.getDestination())));
-							
+
 							route.put(verticesList.searchLoop(ele.getDestination()),u);
 
 						}
@@ -346,7 +321,33 @@ public class flightGraph<T>{
 		return ans;
 	}
 
-
+	String printRoute(Stack<Vertex<T>> stack) {
+		String res ="";
+		while(!stack.isEmpty()) {
+			String city = stack.Pop().getCityInQuestion().toString();
+			if(!stack.isEmpty()) res += city +"==>";
+			else res += city;
+		}
+		if(res.equals("")) res += "Cannot find a route between these destinations.";
+		return res;
+	}
+	
+	String printRouteAndPrice(Stack<Vertex<T>> stack, Price priceFromDij) {
+		String res ="";
+		Price price = priceFromDij;
+		int i = 0;
+		while(!stack.isEmpty()) {
+			i++;
+			Vertex<T> route = stack.Pop();
+			String city = route.getCityInQuestion().toString();
+			if(!stack.isEmpty()) res += city + " ==> ";
+			else res += city;
+		}
+		res += ". \nPrice = " + price;
+		if(i==1) res = "Cannot find a route between these destinations.";
+		return res;
+	}
+	
 	@Override
 	public String toString() {
 		return verticesList.toString();

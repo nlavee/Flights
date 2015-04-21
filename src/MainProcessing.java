@@ -8,7 +8,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import stack.Stack;
 
-public class ProcessingFlight extends PApplet{
+public class MainProcessing extends PApplet{
 
 	////fields////
 	PImage img;
